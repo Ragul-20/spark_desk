@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SPARK Desk — {{ hostel_type|capitalize }} Hostel Blocks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:      #eef2f8;
+      --surface: #0A1F3D;
+      --card:    #ffffff;
+      --card2:   #eef3fa;
+      --border:  #c9d8ec;
+      --blue:    #0A1F3D;
+      --gold:    #F4B400;
+      --text:    #16233A;
+      --muted:   #0A1F3D;
+      --dim:     #7c8aa0;
+    }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 300; background: var(--surface); border-bottom: 2px solid var(--gold); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .nb-left { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+    .nb-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nb-icon  { width: 34px; height: 34px; background: linear-gradient(135deg, var(--gold), #0A2E5C); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(244,180,0,0.4); }
+    .nb-name  { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #F4C430; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; }
+    .nb-name span { color: white; }
+    .nb-sep   { width: 1px; height: 22px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .nb-logo-wrap { background: rgba(255,255,255,0.95); border-radius: 7px; padding: 4px 10px; display: flex; align-items: center; }
+    .nb-logo-wrap img { height: 26px; display: block; }
+    .nb-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .user-chip { display: flex; align-items: center; gap: 8px; background: var(--gold); border: 1.5px solid #F4B400; border-radius: 30px; padding: 5px 14px 5px 6px; font-size: 12px; color: #0A2E5C; max-width: 220px; overflow: hidden; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .user-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-av { width: 26px; height: 26px; background: #0A2E5C; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+    .nb-link { text-decoration: none; color: #a8b3cf; font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(244, 180, 0, 0.4); background: rgba(255,255,255,0.02); color: #F4C430; transition: .18s; white-space: nowrap; }
+    .nb-link:hover { border-color: var(--gold); background: rgba(244, 180, 0, 0.12); color: #F4C430; }
+    .nb-link.logout { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+    .nb-link.logout:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+
+    /* BACK NAV BAR */
+    .back-nav-bar { background: rgba(10,31,61,0.03); border-bottom: 1px solid rgba(244, 180, 0, 0.18); padding: 10px 24px; }
+    .back-nav-inner { max-width: 1200px; margin: 0 auto; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(10,31,61,0.04); border: 1.5px solid rgba(10,31,61,0.35); color: var(--blue); font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; padding: 7px 16px; border-radius: 20px; cursor: pointer; transition: all 0.18s; text-decoration: none; }
+    .back-btn:hover, .back-btn:focus-visible { background: linear-gradient(135deg, #ffd54f, #F4B400); color: #0A1F3D; border-color: #F4B400; transform: translateX(-2px); box-shadow: 0 4px 12px rgba(244, 180, 0, 0.25); outline: none; }
+
+    /* HERO */
+    .hero { position: relative; background: radial-gradient(circle at 80% 20%, #0A1F3D 0%, #0A1F3D 100%); border-bottom: 2px solid var(--gold); color: white; padding: 40px 32px 56px; overflow: hidden; }
+    .hero-orb1 { position: absolute; top: -100px; right: -100px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(244,180,0,0.12) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 10; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); color: #F4C430; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 10px; }
+    .hero h1 { font-family: 'Cinzel', serif; font-size: clamp(22px, 3vw, 34px); color: #fff; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-sub { color: #8f9bb3; font-size: 13px; margin-top: 6px; max-width: 560px; }
+
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    .blocks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    @media (max-width: 900px) { .blocks-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .blocks-grid { grid-template-columns: 1fr; } }
+
+    .block-card { display: block; text-decoration: none; color: inherit; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 22px; position: relative; box-shadow: 0 6px 20px rgba(0,0,0,0.06); transition: all 0.2s; }
+    .block-card:hover, .block-card:focus-visible { transform: translateY(-3px); border-color: var(--gold); box-shadow: 0 10px 26px rgba(244,180,0,0.2); outline: none; }
+    .block-card-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .block-card-badge { width: 46px; height: 46px; border-radius: 10px; background: linear-gradient(135deg, var(--gold), #0A2E5C); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 900; color: #0A1F3D; flex-shrink: 0; }
+    .block-card-title { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 800; color: var(--text); }
+    .block-card-sub { font-size: 11.5px; color: var(--dim); margin-top: 2px; }
+
+    .block-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .bcs-item { background: var(--card2); border-radius: 8px; padding: 8px 10px; }
+    .bcs-num { font-family: 'Sora', sans-serif; font-size: 17px; font-weight: 800; color: var(--blue); }
+    .bcs-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--dim); margin-top: 2px; }
+
+    .block-card-cta { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: var(--blue); border-top: 1px solid var(--border); padding-top: 12px; }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <nav class="navbar">
+    <div class="nb-left">
+      <a href="/welcome" class="nb-brand">
+        <div class="nb-icon">🏠</div>
+        <div class="nb-name">SPARK <span>Desk</span></div>
+      </a>
+      <div class="nb-sep"></div>
+      <div class="nb-logo-wrap">
+        <img src="{{ url_for('static', filename='SECElogo.png') }}" alt="SECE">
+      </div>
+    </div>
+    <div class="nb-right">
+      <a href="/welcome" class="nb-link"><span>⌂</span> Dashboard</a>
+      <div class="user-chip">
+        <div class="user-av">{{ (full_name or email)[0]|upper }}</div>
+        <span>{{ full_name or email }}</span>
+      </div>
+      <a href="/logout" class="nb-link logout">Logout ⏻</a>
+    </div>
+  </nav>
+
+  <div class="back-nav-bar">
+    <div class="back-nav-inner">
+      <a href="#" class="back-btn" onclick="smartBack('/welcome'); return false;">← Back</a>
+    </div>
+  </div>
+  <script>
+    function smartBack(fallbackUrl) {
+      var ref = document.referrer;
+      var sameOrigin = ref && ref.indexOf(window.location.origin) === 0;
+      if (sameOrigin && window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = fallbackUrl;
+      }
+    }
+  </script>
+
+  <section class="hero">
+    <div class="hero-orb1"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">🏛 {{ hostel_type|capitalize }} Hostel</div>
+      <h1>{{ hostel_type|upper }} HOSTEL BLOCKS</h1>
+      <div class="hero-sub">Select a block to view its students, warden, and complaint activity.</div>
+    </div>
+  </section>
+
+  <div class="page-wrap">
+    <div class="blocks-grid">
+      {% for b in blocks %}
+      <a class="block-card" href="/{{ hostel_type }}/block-{{ b.block|lower }}">
+        <div class="block-card-top">
+          <div class="block-card-badge">{{ b.block }}</div>
+          <div>
+            <div class="block-card-title">{{ hostel_type|capitalize }} Block {{ b.block }}</div>
+            <div class="block-card-sub">{{ b.warden.name if b.warden else 'No warden assigned' }}</div>
+          </div>
+        </div>
+        <div class="block-card-stats">
+          <div class="bcs-item">
+            <div class="bcs-num">{{ b.total_students }}</div>
+            <div class="bcs-lbl">Students</div>
+          </div>
+          <div class="bcs-item">
+            <div class="bcs-num">{{ b.complaint_stats.pending + b.complaint_stats.in_progress }}</div>
+            <div class="bcs-lbl">Active Issues</div>
+          </div>
+        </div>
+        <div class="block-card-cta">
+          <span>View Details</span>
+          <span>→</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

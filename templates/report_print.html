@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SECE Hostel Report - {{ scope_str }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #111827;
+      background: #ffffff;
+      padding: 40px;
+      line-height: 1.4;
+    }
+    
+    /* PRINT UTILITIES */
+    .no-print-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: #F4B400;
+      border: 1px solid #0A1F3D;
+      color: #0A1F3D;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(10,46,92,0.2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      z-index: 1000;
+    }
+    .no-print-btn:hover {
+      background: #FFC627;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .logo-container {
+      margin-bottom: 12px;
+    }
+    .logo-container img {
+      height: 48px;
+      display: inline-block;
+    }
+    .college-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #0A2E5C;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+    .college-sub {
+      font-size: 11px;
+      color: #5b6577;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .report-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0A2E5C;
+      margin-top: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .divider {
+      margin-top: 14px;
+      border-top: 1.5px solid #0A2E5C;
+      border-bottom: 0.5px solid #F4B400;
+      height: 3px;
+    }
+
+    /* METADATA BLOCK */
+    .metadata-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+      background: #EEF3FA;
+      border: 1px solid #C9D8EC;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 12px;
+    }
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #C9D8EC;
+      padding-bottom: 6px;
+    }
+    .meta-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .meta-label {
+      font-weight: 700;
+      color: #4C5F7A;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .meta-value {
+      font-weight: 600;
+      color: #0A2E5C;
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      font-size: 11px;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      page-break-inside: avoid;
+    }
+    th {
+      background: #0A2E5C;
+      color: #ffffff;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 9px;
+      padding: 10px 8px;
+      text-align: left;
+      border: 1px solid #0A2E5C;
+    }
+    td {
+      padding: 10px 8px;
+      border: 1px solid #DCE4F0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td {
+      background: #F4F7FC;
+    }
+    .id-col { font-weight: 700; color: #0A2E5C; }
+    .student-name { font-weight: 700; color: #16233A; }
+    .student-email { font-size: 9px; color: #6b7280; margin-top: 2px; }
+    .room-badge { font-weight: 700; color: #16233A; }
+    .floor-badge { font-size: 9px; color: #6b7280; margin-top: 2px; }
+    .cat-badge { font-weight: 600; display: inline-block; padding: 2px 6px; background: #EAF0FA; color: #0A2E5C; border-radius: 4px; font-size: 10px; }
+    .pri-badge { font-weight: 700; font-size: 9px; }
+    .pri-high { color: #C0362C; }
+    .pri-med { color: #1E8E5A; }
+    .pri-low { color: #B8860B; }
+    .status-badge { font-weight: 700; font-size: 9px; }
+    .status-pending { color: #B8860B; }
+    .status-progress { color: #0A2E5C; }
+    .status-resolved { color: #1E8E5A; }
+    .desc-text { line-height: 1.4; color: #374151; white-space: pre-wrap; word-break: break-word; }
+    .note-text { font-style: italic; color: #5b6577; font-size: 10px; }
+
+    /* SIGNATURE FOOTER */
+    .signature-area {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 80px;
+      page-break-inside: avoid;
+    }
+    .sig-box {
+      text-align: center;
+      width: 200px;
+    }
+    .sig-line {
+      border-top: 1px solid #0A2E5C;
+      margin-bottom: 8px;
+    }
+    .sig-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0A2E5C;
+      text-transform: uppercase;
+    }
+
+    /* PRINT LAYOUT ADJUSTMENTS */
+    .table-scroll-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+    @media (max-width: 700px) {
+      body { padding: 20px 16px; }
+      .metadata-section { grid-template-columns: 1fr; gap: 10px; }
+      table { min-width: 900px; }
+    }
+    @media print {
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .table-scroll-wrap {
+        overflow: visible;
+      }
+      table {
+        min-width: 0;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 15mm;
+      }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <!-- Printable Header Controls -->
+  <button class="no-print-btn no-print" onclick="window.print()">Print / Save PDF</button>
+
+  <!-- OFFICIAL REPORT HEADER -->
+  <div class="header">
+    <div class="logo-container">
+      <img src="{{ url_for('static', filename='SECElogo.png') }}" alt="SECE Logo">
+    </div>
+    <div class="college-title">Sri Eshwar College of Engineering</div>
+    <div class="college-sub">Autonomous Institution | Approved by AICTE & Affiliated to Anna University</div>
+    <div class="report-title">Hostel Maintenance System — Complaint Report</div>
+    <div class="divider"></div>
+  </div>
+
+  <!-- METADATA BLOCK -->
+  <div class="metadata-section">
+    <div>
+      <div class="meta-item">
+        <span class="meta-label">Hostel Category:</span>
+        <span class="meta-value">{{ hostel_type|capitalize }} Hostel</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Report Scope:</span>
+        <span class="meta-value">{{ scope_str }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Generated By:</span>
+        <span class="meta-value">{{ admin_name }}</span>
+      </div>
+    </div>
+    <div>
+      <div class="meta-item">
+        <span class="meta-label">Date Generated:</span>
+        <span class="meta-value">{{ generation_date }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Total Complaints:</span>
+        <span class="meta-value">{{ complaints|length }} Records</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLAINTS DATA TABLE -->
+  <div class="table-scroll-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 5%;">ID</th>
+        <th style="width: 14%;">Student Details</th>
+        <th style="width: 10%;">Room / Floor</th>
+        <th style="width: 12%;">Category</th>
+        <th style="width: 8%;">Priority</th>
+        <th style="width: 10%;">Date Raised</th>
+        <th style="width: 18%;">Description</th>
+        <th style="width: 10%;">Status</th>
+        <th style="width: 13%;">Admin Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if complaints %}
+        {% for c in complaints %}
+        <tr>
+          <td class="id-col">#{{ c.id }}</td>
+          <td>
+            <div class="student-name">{{ c.student_name }}</div>
+            <div class="student-email">{{ c.student_email }}</div>
+          </td>
+          <td>
+            <div class="room-badge">Room {{ c.room_number }}</div>
+            <div class="floor-badge">Block {{ c.block or '—' }}, {{ c.floor or '—' }}</div>
+          </td>
+          <td>
+            <span class="cat-badge">{{ c.category }}</span>
+          </td>
+          <td>
+            {% if c.priority == 'High' %}<span class="pri-badge pri-high">🔴 High</span>
+            {% elif c.priority == 'Moderate' %}<span class="pri-badge pri-med">🟢 Moderate</span>
+            {% else %}<span class="pri-badge pri-low">🟡 Low</span>{% endif %}
+          </td>
+          <td>{{ c.created_at.strftime('%d %b %Y') if c.created_at else '—' }}</td>
+          <td>
+            <div class="desc-text">{{ c.description }}</div>
+          </td>
+          <td>
+            {% if c.status == 'Pending' %}<span class="status-badge status-pending">⏳ Pending</span>
+            {% elif c.status == 'In Progress' %}<span class="status-badge status-progress">🔧 In Progress</span>
+            {% else %}<span class="status-badge status-resolved">✅ Resolved</span>{% endif %}
+          </td>
+          <td>
+            <div class="note-text">{{ c.admin_note or '—' }}</div>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="9" style="text-align: center; padding: 30px; font-style: italic; color: #6b7280;">
+            No complaints found matching the report filters.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  </div>
+
+  <!-- SIGNATURE BLOCKS -->
+  <div class="signature-area">
+    <div class="sig-box">
+      <div class="sig-line"></div>
+      <div class="sig-title">Hostel Warden / Officer</div>
+    </div>
+    <div class="sig-box">
+      <div class="sig-line"></div>
+      <div class="sig-title">System Administrator</div>
+    </div>
+  </div>
+
+  <script>
+    // Automatically open the print preview dialog on load
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        window.print();
+      }, 500);
+    });
+  </script>
+</body>
+</html>

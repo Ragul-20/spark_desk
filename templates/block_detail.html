@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SPARK Desk — {{ hostel_type|capitalize }} Hostel Block {{ block }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:      #eef2f8;
+      --surface: #0A1F3D;
+      --card:    #ffffff;
+      --card2:   #eef3fa;
+      --border:  #c9d8ec;
+      --blue:    #0A1F3D;
+      --gold:    #F4B400;
+      --green:   #166534;
+      --orange:  #92400e;
+      --red:     #991b1b;
+      --sky:     #0A1F3D;
+      --purple:  #6b21a8;
+      --text:    #16233A;
+      --muted:   #0A1F3D;
+      --dim:     #7c8aa0;
+    }
+    html, body { width: 100%; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 300; background: var(--surface); border-bottom: 2px solid var(--gold); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 64px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .nb-left { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+    .nb-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .nb-icon  { width: 34px; height: 34px; background: linear-gradient(135deg, var(--gold), #0A2E5C); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(244,180,0,0.4); }
+    .nb-name  { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #F4C430; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; }
+    .nb-name span { color: white; }
+    .nb-sep   { width: 1px; height: 22px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+    .nb-logo-wrap { background: rgba(255,255,255,0.95); border-radius: 7px; padding: 4px 10px; display: flex; align-items: center; }
+    .nb-logo-wrap img { height: 26px; display: block; }
+    .nb-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    .user-chip { display: flex; align-items: center; gap: 8px; background: var(--gold); border: 1.5px solid #F4B400; border-radius: 30px; padding: 5px 14px 5px 6px; font-size: 12px; color: #0A2E5C; max-width: 220px; overflow: hidden; font-weight: 600; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .user-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-av { width: 26px; height: 26px; background: #0A2E5C; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+    .nb-link { text-decoration: none; color: #a8b3cf; font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(244, 180, 0, 0.4); background: rgba(255,255,255,0.02); color: #F4C430; transition: .18s; white-space: nowrap; }
+    .nb-link:hover { border-color: var(--gold); background: rgba(244, 180, 0, 0.12); color: #F4C430; }
+    .nb-link.logout { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+    .nb-link.logout:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
+
+    /* BACK NAV BAR */
+    .back-nav-bar { background: rgba(10,31,61,0.03); border-bottom: 1px solid rgba(244, 180, 0, 0.18); padding: 10px 24px; }
+    .back-nav-inner { max-width: 1200px; margin: 0 auto; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(10,31,61,0.04); border: 1.5px solid rgba(10,31,61,0.35); color: var(--blue); font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; padding: 7px 16px; border-radius: 20px; cursor: pointer; transition: all 0.18s; text-decoration: none; }
+    .back-btn:hover, .back-btn:focus-visible { background: linear-gradient(135deg, #ffd54f, #F4B400); color: #0A1F3D; border-color: #F4B400; transform: translateX(-2px); box-shadow: 0 4px 12px rgba(244, 180, 0, 0.25); outline: none; }
+
+    /* HERO */
+    .hero { position: relative; background: radial-gradient(circle at 80% 20%, #0A1F3D 0%, #0A1F3D 100%); border-bottom: 2px solid var(--gold); color: white; padding: 40px 32px 56px; overflow: hidden; }
+    .hero-orb1 { position: absolute; top: -100px; right: -100px; width: 350px; height: 350px; background: radial-gradient(circle, rgba(244,180,0,0.12) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+    .hero-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 18px; position: relative; z-index: 10; flex-wrap: wrap; }
+    .hero-badge { width: 64px; height: 64px; border-radius: 14px; background: linear-gradient(135deg, var(--gold), #0A2E5C); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 900; color: #0A1F3D; flex-shrink: 0; box-shadow: 0 4px 16px rgba(244,180,0,0.35); }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); color: #F4C430; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 10px; }
+    .hero h1 { font-family: 'Cinzel', serif; font-size: clamp(22px, 3vw, 34px); color: #fff; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-sub { color: #8f9bb3; font-size: 13px; margin-top: 6px; }
+
+    /* LAYOUT */
+    .page-wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    /* STAT CARDS */
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    @media (max-width: 900px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .stat-row { grid-template-columns: 1fr; } }
+    .stat-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); }
+    .stat-num { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 900; color: var(--blue); }
+    .stat-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-top: 4px; }
+
+    /* INFO CARD */
+    .card { background: var(--card); border: 2.5px solid var(--border); border-radius: 12px; padding: 32px; position: relative; box-shadow: 0 8px 30px rgba(0,0,0,0.08); margin-bottom: 24px; }
+    .card::before { content: ''; position: absolute; inset: 6px; border: 1px double rgba(244, 180, 0, 0.3); border-radius: 8px; pointer-events: none; }
+    .sec-label { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 800; color: #0A2E5C; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .sec-label::after { content: ''; flex: 1; height: 1.5px; background: linear-gradient(to right, rgba(10, 46, 92, 0.25), transparent); }
+
+    .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; position: relative; z-index: 2; }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-item .info-k { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+    .info-item .info-v { font-size: 14.5px; font-weight: 700; color: var(--text); }
+
+    .empty-note { font-size: 13px; color: var(--dim); font-style: italic; padding: 10px 0; position: relative; z-index: 2; }
+
+    .list-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--card2); margin-bottom: 8px; font-size: 13px; position: relative; z-index: 2; }
+    .list-row .k { font-weight: 700; color: var(--text); }
+    .list-row .v { font-weight: 700; color: var(--blue); }
+
+    .tri-bar { height: 8px; display: flex; border-radius: 6px; overflow: hidden; margin: 14px 0 18px; position: relative; z-index: 2; }
+    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; position: relative; z-index: 2; }
+    .pill { font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+    .pill-pending  { background: rgba(245,158,11,0.13); color: #92400e; border: 1px solid rgba(245,158,11,0.3); }
+    .pill-progress { background: rgba(59,130,246,0.12); color: #1e3a8a; border: 1px solid rgba(59,130,246,0.3); }
+    .pill-resolved { background: rgba(16,185,129,0.12); color: #065f46; border: 1px solid rgba(16,185,129,0.3); }
+
+    .disclosure { font-size: 12px; color: var(--dim); background: var(--card2); border: 1px dashed var(--border); border-radius: 8px; padding: 10px 14px; margin-top: 4px; position: relative; z-index: 2; }
+
+    /* ── ANALYTICS ── */
+    .mini-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; position: relative; z-index: 2; }
+    @media (max-width: 768px) { .mini-row { grid-template-columns: 1fr; } }
+    .mini-stat { background: var(--card2); border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .mini-lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 6px; }
+    .mini-val { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 900; color: var(--blue); margin-top: 6px; }
+    .mini-val.red { color: #991b1b; }
+    .mini-val.blue { color: #1e40af; }
+    .mini-sub { font-size: 11px; color: var(--dim); margin-top: 2px; font-style: italic; }
+
+    .chart-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 18px; position: relative; z-index: 2; margin-bottom: 18px; }
+    .chart-grid.two { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 900px) { .chart-grid, .chart-grid.two { grid-template-columns: 1fr; } }
+    .chart-box { background: var(--card2); border: 1.5px solid var(--border); border-radius: 10px; padding: 16px; min-height: 260px; display: flex; flex-direction: column; }
+    .chart-title { font-size: 12px; font-weight: 700; color: var(--blue); margin-bottom: 10px; }
+    .chart-box canvas { flex: 1; max-height: 220px; }
+    .chart-empty { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 12.5px; color: var(--dim); font-style: italic; }
+
+    .prog-row { margin-bottom: 14px; position: relative; z-index: 2; }
+    .prog-top { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .prog-track { height: 8px; background: rgba(10,31,61,0.08); border-radius: 6px; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 6px; }
+    .prog-fill.pending { background: #f59e0b; }
+    .prog-fill.progress { background: #3b82f6; }
+    .prog-fill.resolved { background: #10b981; }
+    .prog-total { font-size: 11px; color: var(--dim); margin-top: 10px; }
+
+    /* ── COMPLAINT MANAGEMENT ── */
+    .cm-toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 16px; position: relative; z-index: 2; }
+    .cm-search { position: relative; flex: 1; min-width: 220px; }
+    .cm-search input { width: 100%; padding: 9px 12px 9px 32px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 12.5px; font-family: 'Inter', sans-serif; background: #fff; color: var(--text); }
+    .cm-search span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--dim); }
+    .cm-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cm-flt { font-size: 11.5px; font-weight: 700; padding: 7px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: #fff; color: var(--muted); cursor: pointer; transition: .15s; }
+    .cm-flt.on { background: var(--gold); border-color: var(--gold); color: #0A2E5C; }
+
+    .cm-table-wrap { overflow-x: auto; position: relative; z-index: 2; }
+    .cm-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    .cm-table th { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--dim); text-align: left; padding: 10px 12px; border-bottom: 1.5px solid var(--border); }
+    .cm-table td { font-size: 12.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .cm-name { font-weight: 700; color: var(--text); }
+    .cm-email { font-size: 10.5px; color: var(--dim); }
+    .cm-desc { max-width: 220px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .cm-tag { background: rgba(10,46,92,0.08); color: #0a2472; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+    .cm-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+    .cm-badge.pending  { background: rgba(245,158,11,0.13); color: #92400e; }
+    .cm-badge.progress { background: rgba(59,130,246,0.12); color: #1e3a8a; }
+    .cm-badge.resolved { background: rgba(16,185,129,0.12); color: #065f46; }
+    .cm-badge.high { background: rgba(239,68,68,0.12); color: #991b1b; }
+    .cm-badge.moderate { background: rgba(22,101,52,0.12); color: #166534; }
+    .cm-badge.low { background: rgba(217,180,40,0.15); color: #8c6d30; }
+    .cm-actions { display: flex; gap: 6px; }
+    .cm-btn { font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 6px; border: none; cursor: pointer; }
+    .cm-btn.edit { background: rgba(10,46,92,0.1); color: #0a2472; }
+    .cm-btn.del { background: rgba(239,68,68,0.1); color: #991b1b; }
+    .cm-empty { text-align: center; padding: 34px 10px; color: var(--dim); font-size: 13px; font-style: italic; }
+
+    /* ── EDIT MODAL ── */
+    .cm-modal-bg { display: none; position: fixed; inset: 0; background: rgba(10,31,61,0.55); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
+    .cm-modal-bg.open { display: flex; }
+    .cm-modal { background: #fff; border-radius: 12px; padding: 26px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+    .cm-modal h3 { font-family: 'Cinzel', serif; font-size: 15px; color: var(--blue); margin-bottom: 16px; }
+    .cm-modal label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--dim); display: block; margin-bottom: 5px; margin-top: 12px; }
+    .cm-modal select, .cm-modal textarea { width: 100%; padding: 9px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 12.5px; color: var(--text); }
+    .cm-modal textarea { resize: vertical; min-height: 70px; }
+    .cm-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+    .cm-modal-actions button { padding: 8px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; }
+    .cm-modal-actions .cancel { background: var(--card2); color: var(--muted); }
+    .cm-modal-actions .save { background: var(--gold); color: #0A2E5C; }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <nav class="navbar">
+    <div class="nb-left">
+      <a href="/welcome" class="nb-brand">
+        <div class="nb-icon">🏠</div>
+        <div class="nb-name">SPARK <span>Desk</span></div>
+      </a>
+      <div class="nb-sep"></div>
+      <div class="nb-logo-wrap">
+        <img src="{{ url_for('static', filename='SECElogo.png') }}" alt="SECE">
+      </div>
+    </div>
+    <div class="nb-right">
+      <a href="/welcome" class="nb-link"><span>⌂</span> Dashboard</a>
+      <div class="user-chip">
+        <div class="user-av">{{ (full_name or email)[0]|upper }}</div>
+        <span>{{ full_name or email }}</span>
+      </div>
+      <a href="/logout" class="nb-link logout">Logout ⏻</a>
+    </div>
+  </nav>
+
+  <div class="back-nav-bar">
+    <div class="back-nav-inner">
+      <a href="#" class="back-btn" onclick="smartBack('/{{ hostel_type }}'); return false;">← Back</a>
+    </div>
+  </div>
+  <script>
+    function smartBack(fallbackUrl) {
+      var ref = document.referrer;
+      var sameOrigin = ref && ref.indexOf(window.location.origin) === 0;
+      if (sameOrigin && window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = fallbackUrl;
+      }
+    }
+  </script>
+
+  <section class="hero">
+    <div class="hero-orb1"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">{{ block }}</div>
+      <div>
+        <div class="hero-tag">🏛 {{ hostel_type|capitalize }} Hostel · Block Directory</div>
+        <h1>{{ hostel_type|upper }} HOSTEL — BLOCK {{ block }}</h1>
+        <div class="hero-sub">Live data pulled directly from the hostel database — nothing on this page is fabricated.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-wrap">
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-num">{{ total_students }}</div>
+        <div class="stat-lbl">Total Students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">{{ complaint_stats.total }}</div>
+        <div class="stat-lbl">Total Complaints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">{{ complaint_stats.pending + complaint_stats.in_progress }}</div>
+        <div class="stat-lbl">Active Complaints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">{{ complaint_stats.resolved }}</div>
+        <div class="stat-lbl">Resolved Complaints</div>
+      </div>
+    </div>
+
+    <!-- BLOCK INFORMATION -->
+    <div class="card">
+      <div class="sec-label">Block Information</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-k">Block Name</div>
+          <div class="info-v">{{ hostel_type|capitalize }} Block {{ block }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-k">Hostel Type</div>
+          <div class="info-v">{{ hostel_type|capitalize }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-k">Block Identifier</div>
+          <div class="info-v">{{ block }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-k">Students Registered</div>
+          <div class="info-v">{{ total_students }}</div>
+        </div>
+      </div>
+      <div class="disclosure">ℹ Capacity, total room count, and available-bed figures are not currently tracked in the database, so they aren't shown here to avoid displaying made-up numbers.</div>
+    </div>
+
+    <!-- WARDEN INFORMATION -->
+    <div class="card">
+      <div class="sec-label">Warden Information</div>
+      {% if warden %}
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-k">Warden Name</div>
+          <div class="info-v">{{ warden.name }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-k">Contact</div>
+          <div class="info-v">{{ warden.contact }}</div>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-note">No warden has been assigned to this block yet.</div>
+      {% endif %}
+    </div>
+
+    <!-- ROOM / FLOOR INFORMATION -->
+    <div class="card">
+      <div class="sec-label">Floor Information</div>
+      {% if floor_counts %}
+      {% for floor, count in floor_counts %}
+      <div class="list-row">
+        <span class="k">Floor {{ floor }}</span>
+        <span class="v">{{ count }} student{{ 's' if count != 1 else '' }}</span>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty-note">No floor data available for this block yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Room Information</div>
+      {% if room_counts %}
+      {% for room, count in room_counts %}
+      <div class="list-row">
+        <span class="k">Room {{ room }}</span>
+        <span class="v">{{ count }} student{{ 's' if count != 1 else '' }}</span>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="empty-note">No room data available for this block yet.</div>
+      {% endif %}
+    </div>
+
+    <!-- HOSTEL STATUS -->
+    <div class="card">
+      <div class="sec-label">Hostel Status — Complaints</div>
+      {% if complaint_stats.total > 0 %}
+      <div class="tri-bar">
+        {% set p = (complaint_stats.pending / complaint_stats.total * 100) if complaint_stats.total else 0 %}
+        {% set ip = (complaint_stats.in_progress / complaint_stats.total * 100) if complaint_stats.total else 0 %}
+        {% set r = (complaint_stats.resolved / complaint_stats.total * 100) if complaint_stats.total else 0 %}
+        <div style="width:{{ p }}%; background:#f59e0b;"></div>
+        <div style="width:{{ ip }}%; background:#3b82f6;"></div>
+        <div style="width:{{ r }}%; background:#10b981;"></div>
+      </div>
+      <div class="badge-row">
+        <span class="pill pill-pending">⏳ {{ complaint_stats.pending }} Pending</span>
+        <span class="pill pill-progress">🔧 {{ complaint_stats.in_progress }} In Progress</span>
+        <span class="pill pill-resolved">✅ {{ complaint_stats.resolved }} Resolved</span>
+      </div>
+      {% else %}
+      <div class="empty-note">No complaints have been filed for this block yet.</div>
+      {% endif %}
+    </div>
+
+    <!-- ANALYTICS OVERVIEW -->
+    <div class="card">
+      <div class="sec-label">Analytics Overview — Block {{ block }}</div>
+
+      <div class="mini-row">
+        <div class="mini-stat">
+          <div class="mini-lbl">📊 Resolution Rate</div>
+          <div class="mini-val">{{ ((complaint_stats.resolved / complaint_stats.total * 100) | round | int) if complaint_stats.total > 0 else 0 }}%</div>
+          <div class="mini-sub">{{ complaint_stats.resolved }} of {{ complaint_stats.total }} resolved</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-lbl">🔴 High Priority Open</div>
+          <div class="mini-val red">{{ high_priority_open }}</div>
+          <div class="mini-sub">Need immediate attention</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-lbl">📌 Active Issues</div>
+          <div class="mini-val blue">{{ complaint_stats.pending + complaint_stats.in_progress }}</div>
+          <div class="mini-sub">Currently open in Block {{ block }}</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-title">📅 Monthly Complaints Overview <span style="font-weight:400;color:var(--dim);">— issues raised vs resolved, last 6 months</span></div>
+          <canvas id="blkMonthlyChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">🏷 Complaints by Category</div>
+          <canvas id="blkCatChart" style="{{ 'display:none;' if complaint_stats.total == 0 else '' }}"></canvas>
+          {% if complaint_stats.total == 0 %}<div class="chart-empty">No data yet</div>{% endif %}
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">🎯 Priority Breakdown</div>
+          <canvas id="blkPriChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-grid two">
+        <div class="chart-box">
+          <div class="chart-title">📋 Status Distribution</div>
+          <canvas id="blkStatusChart" style="{{ 'display:none;' if complaint_stats.total == 0 else '' }}"></canvas>
+          {% if complaint_stats.total == 0 %}<div class="chart-empty">No data yet</div>{% endif %}
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">📈 Resolution Progress</div>
+          <div class="prog-row">
+            <div class="prog-top"><span>⏳ Pending</span><span>{{ complaint_stats.pending }}</span></div>
+            <div class="prog-track"><div class="prog-fill pending" style="width:{{ (complaint_stats.pending / complaint_stats.total * 100) if complaint_stats.total > 0 else 0 }}%;"></div></div>
+          </div>
+          <div class="prog-row">
+            <div class="prog-top"><span>🔧 In Progress</span><span>{{ complaint_stats.in_progress }}</span></div>
+            <div class="prog-track"><div class="prog-fill progress" style="width:{{ (complaint_stats.in_progress / complaint_stats.total * 100) if complaint_stats.total > 0 else 0 }}%;"></div></div>
+          </div>
+          <div class="prog-row">
+            <div class="prog-top"><span>✅ Resolved</span><span>{{ complaint_stats.resolved }}</span></div>
+            <div class="prog-track"><div class="prog-fill resolved" style="width:{{ (complaint_stats.resolved / complaint_stats.total * 100) if complaint_stats.total > 0 else 0 }}%;"></div></div>
+          </div>
+          <div class="prog-total">Total raised in Block {{ block }}: {{ complaint_stats.total }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLAINT MANAGEMENT (admin: everyone in this block · student: their own only) -->
+    {% if role == 'admin' %}
+    <div class="card">
+      <div class="sec-label">Complaint Management — Block {{ block }}</div>
+      <div class="cm-toolbar">
+        <div class="cm-search">
+          <span>🔍</span>
+          <input id="cmSearch" placeholder="Search name, room, category…" oninput="cmFilter()">
+        </div>
+        <div class="cm-filters" id="cmFilters">
+          <button type="button" class="cm-flt on" data-status="all">All ({{ complaint_stats.total }})</button>
+          <button type="button" class="cm-flt" data-status="Pending">⏳ Pending ({{ complaint_stats.pending }})</button>
+          <button type="button" class="cm-flt" data-status="In Progress">🔧 In Progress ({{ complaint_stats.in_progress }})</button>
+          <button type="button" class="cm-flt" data-status="Resolved">✅ Resolved ({{ complaint_stats.resolved }})</button>
+        </div>
+      </div>
+      <div class="cm-table-wrap">
+        <table class="cm-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Student</th><th>Category</th><th>Description</th>
+              <th>Room / Floor</th><th>Priority</th><th>Date</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="cmBody">
+            {% if block_complaints %}
+            {% for c in block_complaints %}
+            <tr class="cm-row" data-status="{{ c.status }}"
+                data-search="{{ c.student_name|lower }} {{ c.room_number|lower }} {{ c.category|lower }} {{ c.description|lower }}">
+              <td>{{ loop.index }}</td>
+              <td><div class="cm-name">{{ c.student_name }}</div><div class="cm-email">{{ c.student_email }}</div></td>
+              <td><span class="cm-tag">{{ c.category }}</span></td>
+              <td>
+                <span class="cm-desc" title="{{ c.description }}">{{ c.description }}</span>
+                {% if c.image_filename %}<a href="{{ url_for('uploaded_file', filename=c.image_filename) }}" target="_blank" style="font-size:10.5px;color:var(--blue);">🖼 Photo</a>{% endif %}
+              </td>
+              <td>{{ c.room_number }}<div style="font-size:10.5px;color:var(--dim);">{{ c.floor or '—' }}</div></td>
+              <td>
+                {% if c.priority == 'High' %}<span class="cm-badge high">🔴 High</span>
+                {% elif c.priority == 'Moderate' %}<span class="cm-badge moderate">🟢 Moderate</span>
+                {% else %}<span class="cm-badge low">🟡 Low</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;">{{ c.created_at.strftime('%d %b %Y') }}</td>
+              <td>
+                {% if c.status == 'Pending' %}<span class="cm-badge pending">⏳ Pending</span>
+                {% elif c.status == 'In Progress' %}<span class="cm-badge progress">🔧 In Progress</span>
+                {% else %}<span class="cm-badge resolved">✅ Resolved</span>{% endif %}
+              </td>
+              <td>
+                <div class="cm-actions">
+                  <button type="button" class="cm-btn edit" onclick="cmOpenEdit({{ c.id }}, '{{ c.status }}', `{{ (c.admin_note or '')|replace('`','\\`') }}`)">Edit</button>
+                  <form action="{{ url_for('delete_complaint', cid=c.id) }}" method="POST" onsubmit="return confirm('Delete complaint #{{ c.id }}?');" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="cm-btn del">🗑</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr><td colspan="9" class="cm-empty">📋 No complaints yet.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit modal -->
+    <div class="cm-modal-bg" id="cmModalBg">
+      <div class="cm-modal">
+        <h3>Update Complaint</h3>
+        <form id="cmEditForm" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <label>Status</label>
+          <select name="status" id="cmStatusSelect">
+            <option value="Pending">⏳ Pending</option>
+            <option value="In Progress">🔧 In Progress</option>
+            <option value="Resolved">✅ Resolved</option>
+          </select>
+          <label>Admin Note</label>
+          <textarea name="admin_note" id="cmNoteInput" placeholder="Optional note for the student…"></textarea>
+          <div class="cm-modal-actions">
+            <button type="button" class="cancel" onclick="cmCloseEdit()">Cancel</button>
+            <button type="submit" class="save">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% elif block_complaints %}
+    <div class="card">
+      <div class="sec-label">My Complaints — Block {{ block }}</div>
+      <div class="cm-table-wrap">
+        <table class="cm-table">
+          <thead>
+            <tr><th>#</th><th>Category</th><th>Description</th><th>Priority</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            {% for c in block_complaints %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td><span class="cm-tag">{{ c.category }}</span></td>
+              <td><span class="cm-desc" title="{{ c.description }}">{{ c.description }}</span></td>
+              <td>
+                {% if c.priority == 'High' %}<span class="cm-badge high">🔴 High</span>
+                {% elif c.priority == 'Moderate' %}<span class="cm-badge moderate">🟢 Moderate</span>
+                {% else %}<span class="cm-badge low">🟡 Low</span>{% endif %}
+              </td>
+              <td style="white-space:nowrap;">{{ c.created_at.strftime('%d %b %Y') }}</td>
+              <td>
+                {% if c.status == 'Pending' %}<span class="cm-badge pending">⏳ Pending</span>
+                {% elif c.status == 'In Progress' %}<span class="cm-badge progress">🔧 In Progress</span>
+                {% else %}<span class="cm-badge resolved">✅ Resolved</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script>
+    Chart.defaults.color = '#5b6478';
+    Chart.defaults.font.family = 'Inter';
+
+    const monthLabels = {{ month_labels | safe }};
+    const monthlyIssued = {{ monthly_issued | safe }};
+    const monthlyResolved = {{ monthly_resolved | safe }};
+    const catLabels = {{ cat_labels | safe }};
+    const catCounts = {{ cat_counts | safe }};
+    const priDict = {{ pri_dict | safe }};
+
+    new Chart(document.getElementById('blkMonthlyChart'), {
+      data: {
+        labels: monthLabels,
+        datasets: [
+          { type: 'bar', label: 'Issued', data: monthlyIssued, backgroundColor: 'rgba(244,180,0,0.28)', borderColor: '#F4B400', borderWidth: 1.5, borderRadius: 5, order: 2 },
+          { type: 'line', label: 'Resolved', data: monthlyResolved, borderColor: '#166534', backgroundColor: 'rgba(22,101,52,0.08)', borderWidth: 2.5, pointBackgroundColor: '#166534', pointRadius: 4, tension: 0.38, fill: true, order: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { position: 'top', labels: { boxWidth: 12, padding: 12, font: { size: 11, weight: '600' } } } },
+        scales: { x: { ticks: { font: { size: 11 } } }, y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } } }
+      }
+    });
+
+    if (catLabels.length > 0) {
+      const catColors = ['#0a2472', '#F4B400', '#166534', '#0369a1', '#92400e', '#6b21a8', '#9d174d'];
+      new Chart(document.getElementById('blkCatChart'), {
+        type: 'doughnut',
+        data: { labels: catLabels, datasets: [{ data: catCounts, backgroundColor: catColors, borderColor: '#fff', borderWidth: 3, hoverOffset: 6 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 11, padding: 8, font: { size: 11, weight: '600' } } } }, cutout: '60%' }
+      });
+    }
+
+    new Chart(document.getElementById('blkPriChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Low', 'Moderate', 'High'],
+        datasets: [{ data: [priDict['Low'] || 0, priDict['Moderate'] || 0, priDict['High'] || 0],
+          backgroundColor: ['rgba(140,109,48,0.25)', 'rgba(22,101,52,0.25)', 'rgba(153,27,27,0.25)'],
+          borderColor: ['#F4B400', '#166534', '#991b1b'], borderWidth: 1.5, borderRadius: 5 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } }
+    });
+
+    {% if complaint_stats.total > 0 %}
+    new Chart(document.getElementById('blkStatusChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Pending', 'In Progress', 'Resolved'],
+        datasets: [{ data: [{{ complaint_stats.pending }}, {{ complaint_stats.in_progress }}, {{ complaint_stats.resolved }}],
+          backgroundColor: ['rgba(146,64,14,0.25)', 'rgba(30,64,175,0.25)', 'rgba(22,101,52,0.25)'],
+          borderColor: ['#92400e', '#1e40af', '#166534'], borderWidth: 2, hoverOffset: 6 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, padding: 10, font: { size: 11, weight: '600' } } } }, cutout: '55%' }
+    });
+    {% endif %}
+
+    {% if role == 'admin' %}
+    /* ── Complaint management: search + status filter ── */
+    function cmFilter() {
+      const q = (document.getElementById('cmSearch').value || '').toLowerCase();
+      const active = document.querySelector('.cm-flt.on').dataset.status;
+      document.querySelectorAll('.cm-row').forEach(row => {
+        const matchesSearch = !q || row.dataset.search.includes(q);
+        const matchesStatus = active === 'all' || row.dataset.status === active;
+        row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+      });
+    }
+    document.querySelectorAll('.cm-flt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cm-flt').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        cmFilter();
+      });
+    });
+
+    /* ── Edit modal ── */
+    function cmOpenEdit(id, status, note) {
+      document.getElementById('cmEditForm').action = '/admin/update_complaint/' + id;
+      document.getElementById('cmStatusSelect').value = status;
+      document.getElementById('cmNoteInput').value = note;
+      document.getElementById('cmModalBg').classList.add('open');
+    }
+    function cmCloseEdit() {
+      document.getElementById('cmModalBg').classList.remove('open');
+    }
+    document.getElementById('cmModalBg').addEventListener('click', e => {
+      if (e.target === e.currentTarget) cmCloseEdit();
+    });
+    {% endif %}
+  </script>
+</body>
+</html>

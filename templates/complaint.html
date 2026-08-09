@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>SPARK Desk — Submit Complaint</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #eef1f7; /* Light modern cool background */
+      --surface: #0A1F3D; /* SECE deep blue for header */
+      --card: #ffffff; /* Clean white card background */
+      --card2: #f5f7fb;
+      --border: #0A1F3D; /* SECE blue border */
+      --blue: #0A1F3D;
+      --gold: #ffc107; /* SECE modern yellow/gold accent */
+      --green: #166534;
+      --orange: #92400e;
+      --red: #991b1b;
+      --text: #1c2536; /* Dark slate-blue for text */
+      --muted: #5b6478;
+      --dim: #8a93a8;
+    }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 200; background: #0A1F3D; border-bottom: 4px solid var(--gold); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; box-shadow: 0 4px 20px rgba(10,36,114,0.35); }
+    .nb-brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .nb-icon { width:34px; height:34px; background: linear-gradient(135deg, var(--gold), #c98f00); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; box-shadow: 0 2px 8px rgba(255,193,7,0.4); }
+    .nb-name { font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: #ffc107; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .nb-name span { color: white; }
+    .nb-right { display:flex; align-items:center; gap:12px; }
+    
+    .nb-link { text-decoration: none; color: #a8b3cf; font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(255, 193, 7, 0.4); background: rgba(255,255,255,0.02); color: #ffc107; transition: .18s; white-space: nowrap; }
+    .nb-link:hover, .nb-link.active { color: #0a2472; background: linear-gradient(135deg, #ffd54f, #ffc107); border-color: #ffc107; box-shadow: 0 0 10px rgba(255,193,7,0.35); }
+    .nb-link.logout { color: #f87171; border: 1.5px solid rgba(239,68,68,0.4); background: transparent; }
+    .nb-link.logout:hover { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+    @media (max-width: 768px) {
+      .navbar { flex-wrap: wrap; height: auto; min-height: 64px; row-gap: 10px; padding: 12px 20px; }
+      .nb-right { flex-wrap: wrap; row-gap: 8px; }
+    }
+
+    /* BACK NAV BAR */
+    .back-nav-bar { background: rgba(10,31,61,0.03); border-bottom: 1px solid rgba(255, 193, 7, 0.18); padding: 10px 24px; }
+    .back-nav-inner { max-width: 1100px; margin: 0 auto; }
+    .back-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(10,31,61,0.04); border: 1.5px solid rgba(10,31,61,0.35); color: var(--blue); font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; padding: 7px 16px; border-radius: 20px; cursor: pointer; transition: all 0.18s; text-decoration: none; }
+    .back-btn:hover { background: linear-gradient(135deg, #ffd54f, #ffc107); color: #0A1F3D; border-color: #ffc107; transform: translateX(-2px); box-shadow: 0 4px 12px rgba(255, 193, 7, 0.25); }
+    @media (max-width: 600px) {
+      .back-nav-bar { padding: 8px 16px; }
+      .back-btn { padding: 6px 13px; font-size: 11.5px; }
+    }
+
+ 
+    /* BREADCRUMB */
+    .breadcrumb { max-width:1100px; margin:0 auto; padding:18px 40px 0; font-size:12px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+    .breadcrumb a { color:var(--blue); text-decoration:none; font-weight: 600; }
+    .breadcrumb a:hover { color:#0a2472; }
+ 
+    /* PAGE GRID */
+    .page { max-width:1100px; margin:24px auto 80px; padding:32px 40px; display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:start; background: #ffffff; border: 2px solid var(--blue); border-radius: 12px; position: relative; box-shadow: 0 10px 40px rgba(10,36,114,0.12); }
+    .page::before { content: ''; position: absolute; inset: 6px; border: 1px double rgba(18, 50, 122, 0.25); border-radius: 8px; pointer-events: none; }
+    .page::after {
+      content: ''; position: absolute; inset: 6px; pointer-events: none; border-radius: 8px;
+      background:
+        linear-gradient(to right, var(--gold) 3px, transparent 3px) 0 0,
+        linear-gradient(to bottom, var(--gold) 3px, transparent 3px) 0 0,
+        linear-gradient(to left, var(--gold) 3px, transparent 3px) 100% 0,
+        linear-gradient(to bottom, var(--gold) 3px, transparent 3px) 100% 0,
+        linear-gradient(to right, var(--gold) 3px, transparent 3px) 0 100%,
+        linear-gradient(to top, var(--gold) 3px, transparent 3px) 0 100%,
+        linear-gradient(to left, var(--gold) 3px, transparent 3px) 100% 100%,
+        linear-gradient(to top, var(--gold) 3px, transparent 3px) 100% 100%;
+      background-repeat: no-repeat; background-size: 20px 20px;
+    }
+ 
+    /* FORM CARD & SIDEBAR CARDS */
+    .form-card, .side-card { background:#ffffff; border:1.5px solid var(--border); border-radius:10px; overflow:hidden; position: relative; box-shadow: 0 4px 15px rgba(10,36,114,0.06); }
+    .form-card::before, .side-card::before { content: ''; position: absolute; inset: 4px; border: 1px solid rgba(18, 50, 122, 0.1); border-radius: 7px; pointer-events: none; }
+    .form-card::after, .side-card::after {
+      content: ''; position: absolute; inset: 4px; pointer-events: none; border-radius: 7px;
+      background:
+        linear-gradient(to right, var(--gold) 1.5px, transparent 1.5px) 0 0,
+        linear-gradient(to bottom, var(--gold) 1.5px, transparent 1.5px) 0 0,
+        linear-gradient(to left, var(--gold) 1.5px, transparent 1.5px) 100% 0,
+        linear-gradient(to bottom, var(--gold) 1.5px, transparent 1.5px) 100% 0,
+        linear-gradient(to right, var(--gold) 1.5px, transparent 1.5px) 0 100%,
+        linear-gradient(to top, var(--gold) 1.5px, transparent 1.5px) 0 100%,
+        linear-gradient(to left, var(--gold) 1.5px, transparent 1.5px) 100% 100%,
+        linear-gradient(to top, var(--gold) 1.5px, transparent 1.5px) 100% 100%;
+      background-repeat: no-repeat; background-size: 8px 8px;
+    }
+ 
+    .form-topbar { height:4px; background:linear-gradient(90deg, var(--blue), var(--gold)); }
+    .form-body { padding:36px 40px; position: relative; z-index: 10; }
+    .f-tag { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--blue); margin-bottom:10px; }
+    .form-body h2, .side-card h4 { font-family:'Cinzel',serif; font-size:22px; font-weight:700; color:#0a2472; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+    .f-sub { font-size:13px; color:var(--muted); margin-bottom:30px; line-height:1.6; font-style: italic; }
+ 
+    /* Steps */
+    .steps { display:flex; border-radius:8px; overflow:hidden; border:1.5px solid var(--border); margin-bottom:30px; background: #f0f3fa; }
+    .step { flex:1; padding:11px 8px; text-align:center; background:rgba(18,50,122,0.03); font-size:11px; font-weight:700; color:var(--muted); border-right:1.5px solid var(--border); transition:.2s; text-transform: uppercase; letter-spacing:0.5px; }
+    .step:last-child { border-right:none; }
+    .step.active { background:#ffffff; color:#0a2472; border-bottom: 2.5px solid var(--gold); }
+    .step.done { background:#fff3cd; color:#166534; }
+    .step-ico { font-size:15px; display:block; margin-bottom:3px; }
+ 
+    /* Form layout */
+    .fg { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .full { grid-column:1/-1; }
+    .field { display:flex; flex-direction:column; }
+    .field label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .req::after { content:' *'; color:var(--red); }
+    .iw { position:relative; }
+    .iw .ico { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:14px; opacity:.6; pointer-events:none; }
+ 
+    input, select, textarea {
+      width:100%; padding:12px 16px 12px 42px;
+      background:#ffffff; border:1.5px solid #cdd6e6;
+      border-radius:8px; color:var(--text);
+      font-family:'Inter',sans-serif; font-size:14px; outline:none;
+      transition:border-color .22s, box-shadow .22s;
+    }
+    input::placeholder, textarea::placeholder { color:var(--dim); }
+    input:focus, select:focus, textarea:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(18, 50, 122, 0.12); }
+    select { appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2312327a' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 16px center; padding-right:40px; }
+    select option { background:#ffffff; color:var(--text); }
+    textarea { resize:vertical; min-height:108px; line-height:1.65; padding-top:12px; padding-left:16px; }
+    .no-ico { padding-left:16px; }
+    .char-c { font-size:11px; color:var(--muted); margin-top:5px; text-align:right; font-weight: 600; }
+ 
+    /* Chips */
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+    .chip { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; background:#f0f3fa; border:1.5px solid var(--border); color:var(--muted); cursor:pointer; font-size:13px; font-weight:600; transition:.18s; user-select:none; }
+    .chip:hover { border-color:var(--gold); color:var(--text); background:#ffffff; }
+    .chip.on { border-color:var(--gold); color:#0a2472; background:#fff8e1; font-weight:800; box-shadow: inset 0 2px 4px rgba(255,193,7,0.12); }
+ 
+    .pri-row { display:flex; gap:10px; }
+    .pri { flex:1; padding:10px 8px; border-radius:8px; text-align:center; background:#f0f3fa; border:1.5px solid var(--border); font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; transition:.18s; text-transform: uppercase; }
+    .pri:hover { border-color:var(--gold); color:var(--text); }
+    .pri.on.low  { border-color:var(--green);  background:#d1fae5;  color:#166534; }
+    .pri.on.med  { border-color:var(--gold); background:#fef3c7; color:#854d0e; }
+    .pri.on.high { border-color:var(--red);    background:#fee2e2;  color:#991b1b; }
+    .pri-ico { font-size:17px; display:block; margin-bottom:4px; }
+ 
+    .file-drop { border:2px dashed #b9c4dc; background:#f0f3fa; border-radius:8px; padding:28px 20px; text-align:center; position:relative; cursor:pointer; transition:.22s; }
+    .file-drop:hover { border-color:var(--gold); background:#ffffff; }
+    .file-drop input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+    .fd-ico { font-size:26px; opacity:.6; margin-bottom:8px; }
+    .file-drop p { font-size:13px; color:var(--muted); line-height:1.7; }
+    .file-drop span { color:var(--blue); font-weight:700; }
+    .fname { font-size:12px; color:var(--green); margin-top:6px; font-weight:700; }
+ 
+    .btn-submit { width:100%; margin-top:6px; padding:14px; background:linear-gradient(135deg,#ffd54f,#ffc107); border:1.5px solid #e0a800; border-radius:8px; color:#0a2472; font-family:'Inter',sans-serif; font-size:14px; font-weight:700; cursor:pointer; letter-spacing:.5px; text-transform: uppercase; transition:transform .2s, box-shadow .2s; box-shadow:0 4px 12px rgba(255,193,7,0.3); }
+    .btn-submit:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(255,193,7,0.45); background:linear-gradient(135deg,#ffe082,#ffca28); }
+ 
+    .sidebar { display:flex; flex-direction:column; gap:18px; position: relative; z-index: 10; }
+    .side-card { padding: 22px; }
+    .side-card h4 { font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .hw-list { list-style:none; display:flex; flex-direction:column; }
+    .hw-list li { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid rgba(18,50,122,0.12); font-size:12px; color:var(--muted); line-height:1.65; }
+    .hw-list li:last-child { border-bottom:none; padding-bottom:0; }
+    .hw-n { width:22px; height:22px; border-radius:50%; flex-shrink:0; background:#f0f3fa; border:1px solid var(--border); color:#0a2472; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin-top:1px; }
+    .cat-leg { display:flex; flex-direction:column; gap:9px; }
+    .cl { display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted); }
+    .cl-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .cl strong { color:var(--text); font-weight:700; }
+    
+    .emer { background:#f0f3fa; border:1px solid var(--border); border-radius:8px; padding:16px; font-size:12px; color:var(--muted); line-height:1.75; }
+    .emer strong { color:#0a2472; font-family:'Cinzel',serif; font-size:13px; }
+    .ew { color:var(--red); font-weight:700; margin-top:8px; display:block; }
+ 
+    .toast { position:fixed; bottom:30px; right:30px; background:linear-gradient(135deg, #d1fae5, #a7f3d0); border:1.5px solid #34d399; border-radius:10px; padding:15px 22px; color:#065f46; font-size:14px; font-weight:700; box-shadow:0 8px 30px rgba(0,0,0,0.15); display:flex; align-items:center; gap:10px; z-index:999; animation:su .3s ease; }
+    .toast-err { position:fixed; bottom:30px; right:30px; background:linear-gradient(135deg, #fee2e2, #fecaca); border:1.5px solid #ef4444; border-radius:10px; padding:15px 22px; color:#991b1b; font-size:14px; font-weight:700; box-shadow:0 8px 30px rgba(0,0,0,0.15); display:flex; align-items:center; gap:10px; z-index:999; animation:su .3s ease; }
+    .toast-warn { position:fixed; bottom:30px; right:30px; background:linear-gradient(135deg, #fef3c7, #fde68a); border:1.5px solid #f59e0b; border-radius:10px; padding:15px 22px; color:#92400e; font-size:14px; font-weight:700; box-shadow:0 8px 30px rgba(0,0,0,0.15); display:flex; align-items:center; gap:10px; z-index:999; animation:su .3s ease; }
+    @keyframes su { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+ 
+    @media(max-width:900px) {
+      .page { grid-template-columns:1fr; padding:20px; }
+      .form-body { padding:24px 20px; }
+      .fg { grid-template-columns:1fr; }
+      .navbar { padding:0 20px; }
+      .breadcrumb { padding:14px 20px 0; }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+ 
+  <nav class="navbar">
+    <a class="nb-brand" href="/welcome">
+      <div class="nb-icon">🏠</div>
+      <div class="nb-name">SPARK <span>Desk</span></div>
+    </a>
+    <div class="nb-right">
+      <a href="/welcome"   class="nb-link"><span>⌂</span> Dashboard</a>
+      <a href="/complaint" class="nb-link active"><span>✍</span> Complaint</a>
+      <a href="/logout"    class="nb-link logout">Logout ⏻</a>
+    </div>
+  </nav>
+
+  <div class="back-nav-bar">
+    <div class="back-nav-inner">
+      <a href="#" class="back-btn" onclick="smartBack('/welcome'); return false;">← Back</a>
+    </div>
+  </div>
+  <script>
+    function smartBack(fallbackUrl) {
+      var ref = document.referrer;
+      var sameOrigin = ref && ref.indexOf(window.location.origin) === 0;
+      if (sameOrigin && window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.href = fallbackUrl;
+      }
+    }
+  </script>
+ 
+  <div class="breadcrumb">
+    <a href="/welcome">Dashboard</a>
+    <span>›</span>
+    <span style="color:var(--text)">Submit Complaint</span>
+  </div>
+ 
+  <div class="page">
+ 
+    <div class="form-card">
+      <div class="form-topbar"></div>
+      <div class="form-body">
+        <div class="f-tag">Maintenance Request</div>
+        <h2>Submit a Complaint</h2>
+        <p class="f-sub">Fill in the details below. Our team responds within <strong style="color:#0a2472;">24 hours</strong>.</p>
+ 
+        <div class="steps" id="steps">
+          <div class="step active"><span class="step-ico">📝</span>DETAILS</div>
+          <div class="step"><span class="step-ico">📷</span>PHOTO</div>
+          <div class="step"><span class="step-ico">✅</span>SUBMIT</div>
+        </div>
+ 
+        <form method="POST" action="/submit_complaint" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="fg">
+ 
+            <div class="field">
+              <label class="req">Student Name</label>
+              <div class="iw">
+                <span class="ico">👤</span>
+                <input type="text" name="name" placeholder="Your full name" value="{{ profile.name or full_name }}" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="req">Room Number</label>
+              <div class="iw">
+                <span class="ico">🚪</span>
+                <input type="text" name="room" placeholder="e.g. 204" value="{{ profile.room_no or '' }}" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="req">Hostel Type</label>
+              <div class="iw">
+                <span class="ico">🏠</span>
+                <select name="hostel_type" id="hostelType" required>
+                  <option value="">Select hostel type</option>
+                  <option value="boys" {% if profile and profile.hostel_type == 'boys' %}selected{% endif %}>Boys Hostel</option>
+                  <option value="girls" {% if profile and profile.hostel_type == 'girls' %}selected{% endif %}>Girls Hostel</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Block <span style="color:var(--dim);font-weight:400;">(Select hostel type first)</span></label>
+              <div class="iw">
+                <span class="ico">🏢</span>
+                <select name="block" id="blockSel">
+                  <option value="">Select hostel type first</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="req">Floor Number</label>
+              <div class="iw">
+                <span class="ico">🪜</span>
+                <input type="text" name="floor" placeholder="e.g. 2nd Floor" value="{{ profile.floor or '' }}" required>
+              </div>
+            </div>
+ 
+            <div class="field full">
+              <label class="req">Complaint Category</label>
+              <div class="chips">
+                <span class="chip" data-v="Electrical"  onclick="pickCat(this)">⚡ Electrical</span>
+                <span class="chip" data-v="Plumbing"    onclick="pickCat(this)">🚿 Plumbing</span>
+                <span class="chip" data-v="Wi-Fi"       onclick="pickCat(this)">📶 Wi-Fi</span>
+                <span class="chip" data-v="Cleaning"    onclick="pickCat(this)">🧹 Cleaning</span>
+                <span class="chip" data-v="Furniture"   onclick="pickCat(this)">🪑 Furniture</span>
+                <span class="chip" data-v="Hostel food" onclick="pickCat(this)">🍱 Hostel food</span>
+                <span class="chip" data-v="Others"      onclick="pickCat(this)">📌 Others</span>
+              </div>
+              <input type="hidden" name="category" id="catSel" value="">
+            </div>
+
+            <div class="field full" id="otherCategoryField" style="display: none; margin-top: 10px;">
+              <label class="req">Specify Category</label>
+              <input type="text" name="other_category" id="otherCategoryInput" placeholder="Specify your category..." class="no-ico">
+            </div>
+ 
+ 
+            <div class="field full">
+              <label class="req">Description</label>
+              <textarea name="description" id="desc" class="no-ico"
+                placeholder="Describe the issue — what happened, exact location, since when, how severe..."
+                required maxlength="500"></textarea>
+              <div class="char-c"><span id="cn">0</span> / 500</div>
+            </div>
+ 
+            <div class="field full">
+              <label>Attach Photo <span style="color:var(--dim);font-weight:400;">(Optional — recommended)</span></label>
+              <div class="file-drop">
+                <input type="file" name="image" accept="image/*" id="fileIn">
+                <div class="fd-ico">📎</div>
+                <p><span>Click to upload</span> or drag &amp; drop<br>PNG, JPG, WEBP — Max 10 MB</p>
+              </div>
+              <div class="fname" id="fname"></div>
+            </div>
+ 
+          </div>
+ 
+          <button type="submit" class="btn-submit">Submit Complaint →</button>
+        </form>
+      </div>
+    </div>
+ 
+    <div class="sidebar">
+      <div class="side-card">
+        <h4>📋 How It Works</h4>
+        <ul class="hw-list">
+          <li><div class="hw-n">1</div><div>Enter your name, room number and select a category</div></li>
+          <li><div class="hw-n">2</div><div>Describe the problem clearly (priority is automatically determined)</div></li>
+          <li><div class="hw-n">3</div><div>Attach a photo to help our team understand faster</div></li>
+          <li><div class="hw-n">4</div><div>Submit — our team will respond within 24 hours</div></li>
+          <li><div class="hw-n">5</div><div>Track your status on the dashboard anytime</div></li>
+        </ul>
+      </div>
+ 
+      <div class="side-card">
+        <h4>🏷 Category Guide</h4>
+        <div class="cat-leg">
+          <div class="cl"><div class="cl-dot" style="background:#f59e0b;"></div><strong>Electrical</strong> — lights, fans, sockets</div>
+          <div class="cl"><div class="cl-dot" style="background:#3b82f6;"></div><strong>Plumbing</strong> — leaks, taps, drainage</div>
+          <div class="cl"><div class="cl-dot" style="background:#10b981;"></div><strong>Wi-Fi</strong> — slow speed, no signal</div>
+          <div class="cl"><div class="cl-dot" style="background:#8b5cf6;"></div><strong>Cleaning</strong> — hygiene, common areas</div>
+          <div class="cl"><div class="cl-dot" style="background:#ec4899;"></div><strong>Furniture</strong> — broken beds, chairs</div>
+          <div class="cl"><div class="cl-dot" style="background:#9d174d;"></div><strong>Hostel food</strong> — quality, hygiene, timing</div>
+          <div class="cl"><div class="cl-dot" style="background:#4e5d78;"></div><strong>Others</strong> — anything else (specify)</div>
+        </div>
+      </div>
+ 
+      <div class="side-card">
+        <h4>🚨 Emergency Contact</h4>
+        <div class="emer">
+          <strong>Hostel Warden Office</strong><br>
+          For power failures or major water leaks, contact the warden via block intercom or visit the hostel office.
+          <span class="ew">⚠ Do not wait — report immediately.</span>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+    <div class="toast {% if cat == 'error' %}toast-err{% elif cat == 'warning' %}toast-warn{% else %}toast{% endif %}" id="toast">
+      {% if cat == 'error' %}⚠{% elif cat == 'warning' %}⚡{% else %}✅{% endif %} {{ msg }}
+    </div>
+    {% endfor %}
+    <script>
+      setTimeout(()=>{document.querySelectorAll('.toast, .toast-err, .toast-warn').forEach(t=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),400);})},4000);
+    </script>
+  {% endif %}
+  {% endwith %}
+ 
+  <script>
+    const BLOCKS = {
+      boys:  ['A','B','C','D','E','F'],
+      girls: ['A','B','C']
+    };
+    function updateBlocks() {
+      const type = document.getElementById('hostelType').value;
+      const sel  = document.getElementById('blockSel');
+      const selectedBlock = '{{ profile.block if (profile and profile.block) else "" }}';
+      sel.innerHTML = '<option value="">Select a block</option>';
+      if (type && BLOCKS[type]) {
+        BLOCKS[type].forEach(b => {
+          const opt = document.createElement('option');
+          opt.value = b; opt.textContent = 'Block ' + b;
+          if (b === selectedBlock) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        sel.disabled = false;
+      } else {
+        sel.innerHTML = '<option value="">Select hostel type first</option>';
+        sel.disabled = true;
+      }
+    }
+    document.getElementById('hostelType').addEventListener('change', updateBlocks);
+    updateBlocks();
+ 
+    function pickCat(el) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+      el.classList.add('on');
+      const val = el.dataset.v;
+      document.getElementById('catSel').value = val;
+      
+      const otherField = document.getElementById('otherCategoryField');
+      const otherInput = document.getElementById('otherCategoryInput');
+      if (val === 'Others') {
+        otherField.style.display = 'flex';
+        otherInput.required = true;
+      } else {
+        otherField.style.display = 'none';
+        otherInput.required = false;
+        otherInput.value = '';
+      }
+      advStep(1);
+    }
+    document.getElementById('catSel').addEventListener('change', function () {
+      const val = this.value;
+      document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.v === val));
+      const otherField = document.getElementById('otherCategoryField');
+      const otherInput = document.getElementById('otherCategoryInput');
+      if (val === 'Others') {
+        otherField.style.display = 'flex';
+        otherInput.required = true;
+      } else {
+        otherField.style.display = 'none';
+        otherInput.required = false;
+        otherInput.value = '';
+      }
+    });
+    const desc = document.getElementById('desc');
+    desc.addEventListener('input', () => { document.getElementById('cn').textContent = desc.value.length; advStep(1); });
+    document.getElementById('fileIn').addEventListener('change', function () {
+      document.getElementById('fname').textContent = this.files.length ? '📎 '+this.files[0].name : '';
+      advStep(2);
+    });
+    function advStep(idx) {
+      const steps = document.querySelectorAll('.step');
+      for (let i = 0; i < idx; i++) { if(!steps[i].classList.contains('done')){steps[i].classList.remove('active');steps[i].classList.add('done');} }
+      if (!steps[idx].classList.contains('done')) steps[idx].classList.add('active');
+    }
+  </script>
+ 
+</body>
+</html>

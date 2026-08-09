@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPARK Desk — {{ title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 20% 20%, #0e2a63 0%, #071a4d 55%, #050f2e 100%);
+      color: #ffffff;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 48px 40px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+    }
+    .top-logo {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #ffffff; border-radius: 12px;
+      padding: 8px 16px; margin-bottom: 28px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    }
+    .top-logo img { height: 32px; display: block; }
+    .code {
+      font-family: 'Cinzel', serif;
+      font-weight: 800;
+      font-size: 72px;
+      line-height: 1;
+      color: #ffc107;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #ffffff;
+    }
+    p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 32px;
+    }
+    .btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px; border-radius: 10px;
+      font-size: 13.5px; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.3px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .btn-primary { background: #ffc107; color: #071a4d; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(255,193,7,0.3); }
+    .btn-ghost { background: rgba(255,255,255,0.08); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-ghost:hover { transform: translateY(-2px); background: rgba(255,255,255,0.14); }
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px; }
+      .code { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top-logo">
+      <img src="{{ url_for('static', filename='SECElogo.png') }}" alt="SECE Logo">
+    </div>
+    <div class="code">{{ code }}</div>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    <div class="btn-row">
+      <a href="{{ url_for('login') }}" class="btn btn-primary">← Back to Home</a>
+      {% if code == 403 %}
+      <a href="{{ url_for('logout') }}" class="btn btn-ghost">Switch Account</a>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

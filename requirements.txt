@@ -1,0 +1,17 @@
+Flask==3.1.0
+Flask-SQLAlchemy==3.1.1
+gunicorn==23.0.0
+psycopg2-binary==2.9.10
+
+# --- GOOGLE OAUTH ---
+# Authlib: OAuth2 / OpenID Connect client used for "Continue with Google".
+Authlib==1.7.2
+# requests: HTTP client Authlib uses under the hood to talk to Google's
+# discovery, token, and userinfo endpoints.
+requests==2.32.3
+# python-dotenv: loads GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / SECRET_KEY
+# from a local .env file during development (see .env.example).
+python-dotenv==1.0.1
+
+# --- AI PRIORITY CLASSIFICATION (optional) ---
+google-genai==1.36.0

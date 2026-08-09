@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPARK Desk — SECE Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      display: flex;
+      background: #071a4d;
+      overflow: hidden;
+    }
+    /* LEFT PANEL */
+    .left {
+      flex: 1;
+      position: relative;
+      background: url("{{ url_for('static', filename='hostelimage.png') }}") center / cover no-repeat;
+    }
+    .left-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(125deg, rgba(4, 29, 64, 0.88) 0%, rgba(5, 31, 67, 0.32) 100%);      display: flex; flex-direction: column;
+      justify-content: space-between;
+      padding: 44px 52px;
+    }
+    .top-logo {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: #ffffff; border: 1.5px solid #cdd6e6; border-radius: 12px;
+      padding: 10px 20px; width: fit-content;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .top-logo img { height: 40px; display: block; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(255,193,7,0.12); border: 1px solid rgba(255,193,7,0.35);
+      color: #ffc107; font-size: 10px; font-weight: 700;
+      letter-spacing: 2.4px; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 30px; margin-bottom: 22px;
+    }
+    .head-text h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 3vw, 46px);
+      color: #fff; line-height: 1.18; margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+    .head-text h1 span { color: #ffc107; }
+    .head-text p {
+      color: rgba(255,255,255,0.72); font-size: 14px;
+      line-height: 1.85; max-width: 380px; margin-bottom: 32px;
+    }
+    .stats { display: flex; border-top: 1px solid rgba(255,255,255,0.18); padding-top: 26px; }
+    .stat { flex: 1; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.12); margin-right: 24px; }
+    .stat:last-child { border-right: none; margin-right: 0; }
+    .stat-n { font-family: 'Cinzel', serif; font-size: 28px; font-weight: 800; color: #ffc107; line-height: 1; }
+    .stat-l { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+ 
+    /* RIGHT PANEL (Parchment side scroll style) */
+    .right {
+      width: 480px; min-width: 480px;
+      background: #ffffff;
+      border-left: 2.5px solid #12327a;
+      position: relative; overflow: hidden;
+      color: #1c2536;
+      display: flex;
+      flex-direction: column;
+    }
+    .right::before {
+      content: ''; position: absolute; inset: 6px;
+      border: 1px double rgba(18, 50, 122, 0.28);
+      border-radius: 8px; pointer-events: none;
+    }
+    .right::after {
+      content: ''; position: absolute; inset: 6px; pointer-events: none; border-radius: 8px;
+      background:
+        linear-gradient(to right, #ffc107 3px, transparent 3px) 0 0,
+        linear-gradient(to bottom, #ffc107 3px, transparent 3px) 0 0,
+        linear-gradient(to left, #ffc107 3px, transparent 3px) 100% 0,
+        linear-gradient(to bottom, #ffc107 3px, transparent 3px) 100% 0,
+        linear-gradient(to right, #ffc107 3px, transparent 3px) 0 100%,
+        linear-gradient(to top, #ffc107 3px, transparent 3px) 0 100%,
+        linear-gradient(to left, #ffc107 3px, transparent 3px) 100% 100%,
+        linear-gradient(to top, #ffc107 3px, transparent 3px) 100% 100%;
+      background-repeat: no-repeat; background-size: 16px 16px;
+    }
+    .right-scroll-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .right-content {
+      padding: 52px 50px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .glow { display: none; } /* Disable default neon glows */
+ 
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; position: relative; z-index: 10; }
+    .brand-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, #ffd54f, #ffc107);
+      border: 1.5px solid #e0a800;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(255,193,7,0.3);
+    }
+    .brand-name { font-family: 'Cinzel', serif; font-size: 21px; font-weight: 700; color: #12327a; text-transform: uppercase; letter-spacing: 0.5px; }
+    .brand-name span { color: #0a2472; }
+ 
+    .form-head { position: relative; z-index: 10; }
+    .form-head h2 { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: #0a2472; margin-bottom: 6px; text-transform: uppercase; }
+    .form-head p { font-size: 13px; color: #5b6478; margin-bottom: 32px; line-height: 1.65; font-style: italic; }
+ 
+    .field { margin-bottom: 20px; position: relative; z-index: 10; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 1.1px; text-transform: uppercase;
+      color: #5b6478; margin-bottom: 8px;
+    }
+    .iw { position: relative; }
+    .iw .ico {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); font-size: 14px;
+      opacity: 0.6; pointer-events: none;
+    }
+    .field input {
+      width: 100%; padding: 13px 16px 13px 42px;
+      background: #ffffff;
+      border: 1.5px solid #cdd6e6;
+      border-radius: 8px; color: #1c2536;
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      outline: none; transition: border-color .22s, box-shadow .22s;
+    }
+    #password { padding-right: 48px; }
+    .field input::placeholder { color: #8a93a8; }
+    .field input:focus {
+      border-color: #12327a;
+      box-shadow: 0 0 0 3px rgba(18, 50, 122, 0.12);
+    }
+ 
+    /* PASSWORD VISIBILITY TOGGLE */
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #8a93a8; padding: 4px;
+      border-radius: 6px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .18s, background .18s;
+    }
+    .pw-toggle:hover {
+      color: #1c2536;
+      background: rgba(18, 50, 122, 0.08);
+    }
+    .pw-toggle svg {
+      width: 17px; height: 17px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round;
+    }
+ 
+    .btn-login {
+      width: 100%; margin-top: 8px; padding: 14px;
+      background: linear-gradient(135deg, #ffd54f, #ffc107);
+      border: 1.5px solid #e0a800; border-radius: 8px; color: #0a2472;
+      font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+      position: relative; z-index: 10;
+    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(255, 193, 7, 0.45); background: linear-gradient(135deg, #ffe082, #ffca28); }
+    .btn-login:active { transform: translateY(0); }
+ 
+    .err {
+      margin-top: 16px; padding: 12px 16px;
+      background: #fee2e2;
+      border: 1px solid #ef4444;
+      border-radius: 8px; color: #991b1b;
+      font-size: 13px; display: flex; align-items: center; gap: 9px;
+      font-weight: 700;
+      animation: errIn .28s ease;
+      position: relative; z-index: 10;
+    }
+    @keyframes errIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+ 
+    .shake { animation: shake .36s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      20%{transform:translateX(-7px)}
+      40%{transform:translateX(7px)}
+      60%{transform:translateX(-4px)}
+      80%{transform:translateX(4px)}
+    }
+ 
+    hr.divider { border: none; border-top: 1.5px solid #cdd6e6; margin: 26px 0; position: relative; z-index: 10; }
+ 
+    /* --- GOOGLE OAUTH ADDITION ---
+       Styling for the "Continue with Google" button. Kept visually distinct
+       from .btn-login (white/neutral, Google-style) but matches the same
+       rounded, bordered shape and spacing so it fits the existing design. */
+    .or-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 18px 0; position: relative; z-index: 10;
+    }
+    .or-divider::before, .or-divider::after {
+      content: ""; flex: 1; height: 1px; background: #cdd6e6;
+    }
+    .or-divider span {
+      font-size: 11px; font-weight: 700; color: #5b6478;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .btn-google {
+      width: 100%; padding: 12px 14px;
+      background: #ffffff; border: 1.5px solid #cdd6e6; border-radius: 8px;
+      color: #1c2536; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      cursor: pointer; text-decoration: none;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      position: relative; z-index: 10;
+    }
+    .btn-google:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(18, 50, 122, 0.15); background: #f5f7fb; }
+    .btn-google:active { transform: translateY(0); }
+    .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+    /* --- END GOOGLE OAUTH ADDITION --- */
+    .footer { text-align: center; position: relative; z-index: 10; }
+    .footer p { font-size: 11px; color: #5b6478; line-height: 1.7; font-weight: 600; }
+ 
+    /* Side-by-side layout rows for signup */
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+    .row .field {
+      flex: 1;
+    }
+    select.custom-select {
+      background-image: url("data:image/svg+xml;utf8,<svg fill='%235b6478' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      background-repeat: no-repeat;
+      background-position-x: calc(100% - 12px);
+      background-position-y: 50%;
+      cursor: pointer;
+    }
+    .success-alert {
+      margin-top: 16px; padding: 12px 16px;
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      border-radius: 8px; color: #065f46;
+      font-size: 13px; display: flex; align-items: center; gap: 9px;
+      font-weight: 700;
+      animation: errIn .28s ease;
+      position: relative; z-index: 10;
+    }
+ 
+    @media (max-width: 860px) {
+      .left { display: none; }
+      .right { width: 100%; min-width: 100%; border-left: none; }
+    }
+    @media (max-width: 480px) {
+      .right-content { padding: 40px 22px; }
+      .row { flex-direction: column; gap: 0; }
+    }
+    @media (max-height: 750px) {
+      .left-overlay { padding: 24px 32px; }
+      .left-overlay .stats { display: none; }
+      .left-overlay .head-text p { display: none; }
+      .brand { margin-bottom: 24px; }
+      .right-content { padding: 36px 40px; }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;"> 
+  <div class="left">
+    <div class="left-overlay">
+      <div class="top-logo">
+        <img src="{{ url_for('static', filename='SECElogo.png') }}" alt="SECE Logo">
+      </div>
+      <div class="head-text">
+        <div class="pill">🏛 SECE Hostel Management System</div>
+        <h1>SPARK Desk <br><span>Faster Every Time.</span></h1>
+        <p>Sri Eshwar College of Engineering's official platform for reporting and tracking hostel maintenance issues. Submit once, resolved fast.</p>
+        <div class="stats">
+          <div class="stat"><div class="stat-n">24h</div><div class="stat-l">Avg. Response</div></div>
+          <div class="stat"><div class="stat-n">6+</div><div class="stat-l">Issue Categories</div></div>
+          <div class="stat"><div class="stat-n">100%</div><div class="stat-l">SECE Students</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="right">
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+ 
+    <div class="right-scroll-container">
+      <div class="right-content">
+        <div class="brand">
+          <div class="brand-icon">🏠</div>
+          <div class="brand-name">SPARK <span>Desk</span></div>
+        </div>
+ 
+        <!-- Login Panel -->
+        <div id="login-panel">
+          <div class="form-head">
+            <h2>Student Login</h2>
+            <p>Sign in with your official SECE college email and password to access the hostel grievance portal.</p>
+          </div>
+ 
+          <form action="/login" method="POST" id="loginForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="field">
+              <label for="email">College Email</label>
+              <div class="iw">
+                <span class="ico">✉</span>
+                <input type="email" name="email" id="email"
+                       placeholder="yourname@sece.ac.in"
+                       required autocomplete="username">
+              </div>
+            </div>
+ 
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="iw">
+                <span class="ico">🔒</span>
+                <input type="password" name="password" id="password"
+                       placeholder="Enter your password"
+                       required autocomplete="current-password">
+ 
+                <button type="button" class="pw-toggle" id="pwToggle"
+                        aria-label="Toggle password visibility"
+                        aria-pressed="false">
+                  <!-- Eye open (shown when password is hidden) -->
+                  <svg id="iconEye" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <!-- Eye closed (shown when password is visible) -->
+                  <svg id="iconEyeOff" viewBox="0 0 24 24" style="display:none;" aria-hidden="true">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+ 
+            <button type="submit" class="btn-login">Login to Portal →</button>
+ 
+            {% if error and not show_signup %}
+            <div class="err" role="alert">⚠ {{ error }}</div>
+            {% endif %}
+ 
+            {% if success %}
+            <div class="success-alert" role="alert">✓ {{ success }}</div>
+            {% endif %}
+          </form>
+ 
+          <!-- GOOGLE OAUTH ADDITION: "Continue with Google" button.
+               Links to the /login/google route added in app.py, which starts
+               the OpenID Connect flow. Restricted server-side to @sece.ac.in
+               accounts. Existing email/password login above is unchanged. -->
+          <div class="or-divider"><span>OR</span></div>
+          <a href="{{ url_for('google_login') }}" class="btn-google">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+              <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+              <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+              <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+            </svg>
+            Continue with Google
+          </a>
+ 
+          <div style="text-align: center; margin-top: 20px; font-size: 13px; font-weight: 600; color: #5b6478;">
+            Don't have an account? <a href="#" id="to-signup" style="color: #0a2472; text-decoration: none; font-weight: 700; transition: color 0.2s;">Sign Up</a>
+          </div>
+        </div>
+ 
+        <!-- Signup Panel -->
+        <div id="signup-panel" style="display: none;">
+          <div class="form-head">
+            <h2>Student Sign Up</h2>
+            <p>Create a new student account using your official college details to access the hostel portal.</p>
+          </div>
+ 
+          <form action="/signup" method="POST" id="signupForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="err" id="signup-js-error" style="display: none;" role="alert"></div>
+ 
+            <div class="field">
+              <label for="signup-name">Full Name</label>
+              <div class="iw">
+                <span class="ico">👤</span>
+                <input type="text" name="name" id="signup-name"
+                       placeholder="Enter your full name" required autocomplete="name">
+              </div>
+            </div>
+ 
+            <div class="row">
+              <div class="field">
+                <label for="signup-roll">Roll Number</label>
+                <div class="iw">
+                  <span class="ico">🆔</span>
+                  <input type="text" name="roll_number" id="signup-roll"
+                         placeholder="25AD167" required autocomplete="off">
+                </div>
+              </div>
+ 
+              <div class="field">
+                <label for="signup-dept">Department</label>
+                <div class="iw">
+                  <span class="ico">🎓</span>
+                  <select name="dept" id="signup-dept" class="custom-select" required style="
+                    width: 100%; padding: 13px 16px 13px 42px;
+                    background: #ffffff;
+                    border: 1.5px solid #cdd6e6;
+                    border-radius: 8px; color: #1c2536;
+                    font-family: 'Inter', sans-serif; font-size: 14px;
+                    outline: none; transition: border-color .22s, box-shadow .22s;
+                    appearance: none;
+                  ">
+                    <option value="" disabled selected hidden>Select Dept</option>
+                    <option value="CSE">CSE</option>
+                    <option value="AIDS">AIDS</option>
+                    <option value="AIML">AIML</option>
+                    <option value="IT">IT</option>
+                    <option value="ECE">ECE</option>
+                    <option value="EEE">EEE</option>
+                    <option value="CSBS">CSBS</option>
+                    <option value="CYS">CYS</option>
+                    <option value="Mech">Mech</option>
+                    <option value="CCE">CCE</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+ 
+            <div class="row">
+              <div class="field">
+                <label for="signup-year">Year</label>
+                <div class="iw">
+                  <span class="ico">📅</span>
+                  <select name="year" id="signup-year" class="custom-select" required style="
+                    width: 100%; padding: 13px 16px 13px 42px;
+                    background: #ffffff;
+                    border: 1.5px solid #cdd6e6;
+                    border-radius: 8px; color: #1c2536;
+                    font-family: 'Inter', sans-serif; font-size: 14px;
+                    outline: none; transition: border-color .22s, box-shadow .22s;
+                    appearance: none;
+                  ">
+                    <option value="" disabled selected hidden>Select Year</option>
+                    <option value="I">I Year</option>
+                    <option value="II">II Year</option>
+                    <option value="III">III Year</option>
+                    <option value="IV">IV Year</option>
+                  </select>
+                </div>
+              </div>
+ 
+              <div class="field">
+                <label for="signup-phone">Phone Number</label>
+                <div class="iw">
+                  <span class="ico">📞</span>
+                  <input type="tel" name="phone" id="signup-phone"
+                         placeholder="9876543210" required autocomplete="tel" pattern="[0-9]{10}">
+                </div>
+              </div>
+            </div>
+ 
+            <div class="row">
+              <div class="field">
+                <label for="signup-hostel">Hostel Type</label>
+                <div class="iw">
+                  <span class="ico">🏢</span>
+                  <select name="hostel_type" id="signup-hostel" class="custom-select" required style="
+                    width: 100%; padding: 13px 16px 13px 42px;
+                    background: #ffffff;
+                    border: 1.5px solid #cdd6e6;
+                    border-radius: 8px; color: #1c2536;
+                    font-family: 'Inter', sans-serif; font-size: 14px;
+                    outline: none; transition: border-color .22s, box-shadow .22s;
+                    appearance: none;
+                  ">
+                    <option value="" disabled selected hidden>Select Hostel</option>
+                    <option value="boys">Boys Hostel</option>
+                    <option value="girls">Girls Hostel</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="signup-block">Block</label>
+                <div class="iw">
+                  <span class="ico">🏢</span>
+                  <select name="block" id="signup-block" class="custom-select" required style="
+                    width: 100%; padding: 13px 16px 13px 42px;
+                    background: #ffffff;
+                    border: 1.5px solid #cdd6e6;
+                    border-radius: 8px; color: #1c2536;
+                    font-family: 'Inter', sans-serif; font-size: 14px;
+                    outline: none; transition: border-color .22s, box-shadow .22s;
+                    appearance: none;
+                  ">
+                    <option value="" disabled selected hidden>Select Block</option>
+                    <option value="A">Block A</option>
+                    <option value="B">Block B</option>
+                    <option value="C">Block C</option>
+                    <option value="D">Block D</option>
+                    <option value="E">Block E</option>
+                    <option value="F">Block F</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="signup-floor">Floor</label>
+                <div class="iw">
+                  <span class="ico">🪜</span>
+                  <input type="text" name="floor" id="signup-floor"
+                         placeholder="e.g. 2nd Floor" required autocomplete="off">
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="signup-room">Room No.</label>
+                <div class="iw">
+                  <span class="ico">🔑</span>
+                  <input type="text" name="room_no" id="signup-room"
+                         placeholder="e.g. 204" required autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="signup-email">Official Email</label>
+              <div class="iw">
+                <span class="ico">✉</span>
+                <input type="email" name="email" id="signup-email"
+                       placeholder="xyz@sece.ac.in" required autocomplete="email">
+              </div>
+            </div>
+ 
+            <div class="field">
+              <label for="signup-password">Password</label>
+              <div class="iw">
+                <span class="ico">🔒</span>
+                <input type="password" name="password" id="signup-password"
+                       placeholder="Create a password" required autocomplete="new-password">
+                <button type="button" class="pw-toggle" id="signupPwToggle"
+                        aria-label="Toggle password visibility"
+                        aria-pressed="false">
+                  <!-- Eye open (shown when password is hidden) -->
+                  <svg class="iconEye" viewBox="0 0 24 24" aria-hidden="true" style="width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round;">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <!-- Eye closed (shown when password is visible) -->
+                  <svg class="iconEyeOff" viewBox="0 0 24 24" style="display:none; width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round;" aria-hidden="true">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+ 
+            <button type="submit" class="btn-login">Sign Up &amp; Register →</button>
+ 
+            {% if error and show_signup %}
+            <div class="err" role="alert">⚠ {{ error }}</div>
+            {% endif %}
+          </form>
+ 
+          <div style="text-align: center; margin-top: 20px; font-size: 13px; font-weight: 600; color: #5b6478;">
+            Already have an account? <a href="#" id="to-login" style="color: #0a2472; text-decoration: none; font-weight: 700; transition: color 0.2s;">Log In</a>
+          </div>
+        </div>
+ 
+        <hr class="divider">
+        <div class="footer">
+          <p>Sri Eshwar College of Engineering<br>Hostel Grievance &amp; Maintenance Portal · 2026</p>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  <script>
+    // Toggle password visibility for Login password
+    document.getElementById('pwToggle').addEventListener('click', function () {
+      const inp     = document.getElementById('password');
+      const isHidden = inp.type === 'password';
+      inp.type      = isHidden ? 'text' : 'password';
+      document.getElementById('iconEye').style.display    = isHidden ? 'none' : '';
+      document.getElementById('iconEyeOff').style.display = isHidden ? ''     : 'none';
+      this.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+    });
+ 
+    // Toggle password visibility for Signup password
+    document.getElementById('signupPwToggle').addEventListener('click', function () {
+      const inp     = document.getElementById('signup-password');
+      const isHidden = inp.type === 'password';
+      inp.type      = isHidden ? 'text' : 'password';
+      this.querySelector('.iconEye').style.display    = isHidden ? 'none' : '';
+      this.querySelector('.iconEyeOff').style.display = isHidden ? ''     : 'none';
+      this.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+    });
+ 
+    // Panel Toggle Event Listeners
+    document.getElementById('to-signup').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('login-panel').style.display = 'none';
+      document.getElementById('signup-panel').style.display = 'block';
+      // Clear error and success elements when switching panels
+      const errors = document.querySelectorAll('.err, .success-alert');
+      errors.forEach(el => el.style.display = 'none');
+    });
+ 
+    document.getElementById('to-login').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('signup-panel').style.display = 'none';
+      document.getElementById('login-panel').style.display = 'block';
+      // Clear error and success elements when switching panels
+      const errors = document.querySelectorAll('.err, .success-alert');
+      errors.forEach(el => el.style.display = 'none');
+    });
+ 
+    // Frontend Sign Up Email domain and form validation
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      const email = document.getElementById('signup-email').value.trim().toLowerCase();
+      const errorDiv = document.getElementById('signup-js-error');
+      
+      if (!email.endsWith('@sece.ac.in')) {
+        e.preventDefault();
+        errorDiv.textContent = '⚠ Use your college official email';
+        errorDiv.style.display = 'flex';
+        
+        // Shake form on error
+        this.classList.add('shake');
+        this.addEventListener('animationend', () => this.classList.remove('shake'), { once: true });
+        return;
+      }
+      errorDiv.style.display = 'none';
+    });
+ 
+    // Shake and route logic on DOM load
+    window.addEventListener('DOMContentLoaded', function () {
+      {% if show_signup %}
+        document.getElementById('login-panel').style.display = 'none';
+        document.getElementById('signup-panel').style.display = 'block';
+        {% if error %}
+          const f = document.getElementById('signupForm');
+          f.classList.add('shake');
+          f.addEventListener('animationend', () => f.classList.remove('shake'), { once: true });
+        {% endif %}
+      {% else %}
+        {% if error %}
+          const f = document.getElementById('loginForm');
+          f.classList.add('shake');
+          f.addEventListener('animationend', () => f.classList.remove('shake'), { once: true });
+        {% endif %}
+      {% endif %}
+    });
+  </script>
+</body>
+</html>
